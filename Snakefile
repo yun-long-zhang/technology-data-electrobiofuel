@@ -41,28 +41,28 @@ rule compile_cost_assumptions:
         "scripts/compile_cost_assumptions.py"
 
 
-rule compile_cost_assumptions_usa:
-    input:
-        cost_files_to_modify=expand("outputs/costs_{year}.csv", year=config["years"]),
-        nrel_atb_input_files=expand(
-            "inputs/US/atb_e_{year}.parquet",
-            year=config["nrel_atb"]["nrel_atb_input_years"],
-        ),
-        nrel_atb_manual_input_usa="inputs/US/manual_input_usa.csv",
-        inflation_rate="inputs/Eurostat_inflation_rates.xlsx",
-        nrel_atb_input_discount_rate="inputs/US/discount_rates_usa.csv",
-        nrel_atb_input_fuel_costs="inputs/US/fuel_costs_usa.csv",
-    output:
-        expand("outputs/US/costs_{year}.csv", year=config["years"]),
-    threads: 1
-    resources:
-        mem=500,
-    conda:
-        "environment.yaml"
-    log:
-        pathlib.Path("logs", "compile_cost_assumptions_usa.log"),
-    script:
-        "scripts/compile_cost_assumptions_usa.py"
+# rule compile_cost_assumptions_usa:
+#     input:
+#         cost_files_to_modify=expand("outputs/costs_{year}.csv", year=config["years"]),
+#         nrel_atb_input_files=expand(
+#             "inputs/US/atb_e_{year}.parquet",
+#             year=config["nrel_atb"]["nrel_atb_input_years"],
+#         ),
+#         nrel_atb_manual_input_usa="inputs/US/manual_input_usa.csv",
+#         inflation_rate="inputs/Eurostat_inflation_rates.xlsx",
+#         nrel_atb_input_discount_rate="inputs/US/discount_rates_usa.csv",
+#         nrel_atb_input_fuel_costs="inputs/US/fuel_costs_usa.csv",
+#     output:
+#         expand("outputs/US/costs_{year}.csv", year=config["years"]),
+#     threads: 1
+#     resources:
+#         mem=500,
+#     conda:
+#         "environment.yaml"
+#     log:
+#         pathlib.Path("logs", "compile_cost_assumptions_usa.log"),
+#     script:
+#         "scripts/compile_cost_assumptions_usa.py"
 
 
 # rule convert_fraunhofer:
@@ -94,7 +94,7 @@ rule convert_EWG:
 rule all:
     input:
         rules.compile_cost_assumptions.output,
-        rules.compile_cost_assumptions_usa.output,
+    #    rules.compile_cost_assumptions_usa.output,
     default_target: True
 
 

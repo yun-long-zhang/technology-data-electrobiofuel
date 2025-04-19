@@ -841,22 +841,24 @@ dry bulk carrier Capesize,FOM,4.0,%/year,"Based on https://www.hellenicshippingn
 dry bulk carrier Capesize,capacity,180000.0,t,-,"DWT; corresponds to size of Capesize bulk carriers which have previously docked at the habour in Hamburg, Germany. Short of 200 kt limit for VLBCs.",2020.0
 dry bulk carrier Capesize,investment,40000000.0,EUR,"Based on https://www.hellenicshippingnews.com/dry-bulk-carriers-in-high-demand-as-rates-keep-rallying/, accessed: 2022-12-03.","See figure for ‘Dry Bulk Newbuild Prices’, Capesize at end of 2020. Exchange rate: 1.15 USD = 1 EUR.",2020.0
 dry bulk carrier Capesize,lifetime,25.0,years,"Based on https://mfame.guru/fall-life-expectancy-bulk-carriers/, accessed: 2022-12-03.",Expected lifetime.,2020.0
-e-bioSNG,C in fuel,0.9202,per unit,Stoichiometric calculation,,
+e-bioSNG,C in fuel,0.9324,per unit,Stoichiometric calculation,,
 e-bioSNG,FOM,1.608,%/year,combination of bioSNG and electrofuels,,2015.0
-e-bioSNG,VOM,2.9845,EUR/MWh_th,combination of bioSNG and electrofuels,,2017.0
+e-bioSNG,VOM,1.0371,EUR/MWh_th,combination of bioSNG and electrofuels,,2017.0
 e-bioSNG,capture rate,0.9,per unit,Assumption based on doi:10.1016/j.biombioe.2015.01.006,,
-e-bioSNG,efficiency-biomass,1.7041,per unit,Stoichiometric calculation,,
-e-bioSNG,efficiency-hydrogen,1.0161,per unit,Stoichiometric calculation,,
-e-bioSNG,efficiency-tot,0.6055,per unit,Stoichiometric calculation,,
-e-bioSNG,investment,3227.0395,EUR/kW_th,combination of bioSNG and electrofuels,,2017.0
-e-biomethanol,C in fuel,0.9283,per unit,Stoichiometric calculation,,
+e-bioSNG,efficiency-biomass,1.7267,per unit,Stoichiometric calculation,,
+e-bioSNG,efficiency-hydrogen-biomass,1.8759,per unit,Stoichiometric calculation,,
+e-bioSNG,efficiency-hydrogen-fuel,0.9204,per unit,Stoichiometric calculation,,
+e-bioSNG,efficiency-tot,0.6004,per unit,Stoichiometric calculation,,
+e-bioSNG,investment,960.2728,EUR/kW_th,combination of bioSNG and electrofuels,,2017.0
+e-biomethanol,C in fuel,0.9393,per unit,Stoichiometric calculation,,
 e-biomethanol,FOM,1.1111,%/year,combination of biomass-to-methanol and electrofuels,,2015.0
-e-biomethanol,VOM,22.5545,EUR/MWh_th,combination of biomass-to-methanol and electrofuels,,2017.0
+e-biomethanol,VOM,9.4277,EUR/MWh_th,combination of biomass-to-methanol and electrofuels,,2017.0
 e-biomethanol,capture rate,0.9,per unit,Assumption based on doi:10.1016/j.biombioe.2015.01.006,,
-e-biomethanol,efficiency-biomass,1.3714,per unit,Stoichiometric calculation,,
-e-biomethanol,efficiency-hydrogen,0.4179,per unit,Stoichiometric calculation,,
-e-biomethanol,efficiency-tot,0.7062,per unit,Stoichiometric calculation,,
-e-biomethanol,investment,6250.9412,EUR/kW_th,combination of biomass-to-methanol and electrofuels,,2017.0
+e-biomethanol,efficiency-biomass,1.3876,per unit,Stoichiometric calculation,,
+e-biomethanol,efficiency-hydrogen-biomass,0.9725,per unit,Stoichiometric calculation,,
+e-biomethanol,efficiency-hydrogen-fuel,1.4269,per unit,Stoichiometric calculation,,
+e-biomethanol,efficiency-tot,0.7035,per unit,Stoichiometric calculation,,
+e-biomethanol,investment,2429.4466,EUR/kW_th,combination of biomass-to-methanol and electrofuels,,2017.0
 electric arc furnace,FOM,30.0,%/year,"Model assumptions from MPP Steel Transition Tool: https://github.com/missionpossiblepartnership/mpp-steel-model/blob/9eca52db92bd2d9715f30e98ccaaf36677fdb516/mppsteel/data/import_data/CAPEX%20OPEX%20Per%20Technology.xlsx, accessed: 2022-12-05.","EAF has high OPEX of 62.99 EUR/year/t_steel, presumably because of electrode corrosion.",2020.0
 electric arc furnace,electricity-input,0.6395,MWh_el/t_steel,"Mission Possible Partnership (2022): Steel Model (https://github.com/missionpossiblepartnership/mpp-steel-model/blob/9eca52db92bd2d9715f30e98ccaaf36677fdb516/mppsteel/data/import_data/Technology%20Business%20Cases.csv, accessed: 2022-12-03).",Based on process ‘EAF’. ,2020.0
 electric arc furnace,hbi-input,1.0,t_hbi/t_steel,-,Assume HBI instead of scrap as input.Scrap would require higher input (in tonnes) as steel content is lower.,2020.0
@@ -880,14 +882,15 @@ electricity distribution grid,lifetime,40.0,years,TODO, from old pypsa cost assu
 electricity grid connection,FOM,2.0,%/year,TODO, from old pypsa cost assumptions,2015.0
 electricity grid connection,investment,148.151,EUR/kW,DEA, from old pypsa cost assumptions,2015.0
 electricity grid connection,lifetime,40.0,years,TODO, from old pypsa cost assumptions,2015.0
-electrobiofuels,C in fuel,0.911,per unit,"Stoichiometric calculation, doi.org/10.1016/j.fuel.2018.08.004",,
+electrobiofuels,C in fuel,0.9245,per unit,"Stoichiometric calculation, doi.org/10.1016/j.fuel.2018.08.004",,
 electrobiofuels,FOM,2.4,%/year,combination of BtL and electrofuels,,2015.0
-electrobiofuels,VOM,5.0734,EUR/MWh_th,combination of BtL and electrofuels,,2017.0
+electrobiofuels,VOM,0.3118,EUR/MWh_th,combination of BtL and electrofuels,,2017.0
 electrobiofuels,capture rate,0.9,per unit,Assumption based on doi:10.1016/j.biombioe.2015.01.006,,
-electrobiofuels,efficiency-biomass,1.299,per unit,Stoichiometric calculation,,
-electrobiofuels,efficiency-hydrogen,0.8645,per unit,Stoichiometric calculation,,
-electrobiofuels,efficiency-tot,0.519,per unit,Stoichiometric calculation,,
-electrobiofuels,investment,4183.2963,EUR/kW_th,combination of BtL and electrofuels,,2017.0
+electrobiofuels,efficiency-biomass,1.3183,per unit,Stoichiometric calculation,,
+electrobiofuels,efficiency-hydrogen-biomass,1.3773,per unit,Stoichiometric calculation,,
+electrobiofuels,efficiency-hydrogen-fuel,0.9572,per unit,Stoichiometric calculation,,
+electrobiofuels,efficiency-tot,0.5545,per unit,Stoichiometric calculation,,
+electrobiofuels,investment,965.8864,EUR/kW_th,combination of BtL and electrofuels,,2017.0
 electrolysis,FOM,4.0,%/year,"Danish Energy Agency, inputs/data_sheets_for_renewable_fuels.xlsx",86 AEC 100 MW:  Fixed O&M ,2020.0
 electrolysis,efficiency,0.5773,per unit,"Danish Energy Agency, inputs/data_sheets_for_renewable_fuels.xlsx",86 AEC 100 MW:  Hydrogen Output,2020.0
 electrolysis,efficiency-heat,0.2762,per unit,"Danish Energy Agency, inputs/data_sheets_for_renewable_fuels.xlsx",86 AEC 100 MW:   - hereof recoverable for district heating,2020.0

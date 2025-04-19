@@ -2935,13 +2935,10 @@ def carbon_flow(
             cost_dataframe.loc[("electrobiofuels", "C in fuel"), "value"] = (
                 cost_dataframe.loc[("BtL", "C in fuel"), "value"]
                 + cost_dataframe.loc[("BtL", "C stored"), "value"]
-                * cost_dataframe.loc[("Fischer-Tropsch", "capture rate"), "value"] * 0.98
+                * cost_dataframe.loc[("Fischer-Tropsch", "capture rate"), "value"]
             )
             #cost_dataframe.loc[("electrobiofuels", "C in fuel"), "value"] = 0.913
             cost_dataframe.loc[("electrobiofuels", "C in fuel"), "unit"] = "per unit"
-            # cost_dataframe.loc[("electrobiofuels", "C in fuel"), "source"] = (
-            #     "Stoichiometric calculation"
-            # )
             cost_dataframe.loc[("electrobiofuels", "C in fuel"), "source"] = (
                 "Stoichiometric calculation, doi.org/10.1016/j.fuel.2018.08.004"
             )
@@ -2958,46 +2955,40 @@ def carbon_flow(
                 "Stoichiometric calculation"
             )
 
-            efuel_scale_factor = (
-                cost_dataframe.loc[("BtL", "C stored"), "value"]
-                * cost_dataframe.loc[("Fischer-Tropsch", "capture rate"), "value"] * 0.98
-            )
             # efuel_scale_factor = (
             #     cost_dataframe.loc[("electrobiofuels", "C in fuel"), "value"] - cost_dataframe.loc[("BtL", "C in fuel"), "value"]
             # )
+            efuel_scale_factor = (
+                cost_dataframe.loc[("BtL", "C stored"), "value"]
+                * cost_dataframe.loc[("Fischer-Tropsch", "capture rate"), "value"]
+            )
 
-            # cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen"), "value"] = (cost_dataframe.loc[("electrobiofuels", "efficiency-biomass"), "value"]/(
-            #     cost_dataframe.loc[("Fischer-Tropsch", "efficiency"), "value"]
-            #     / efuel_scale_factor )
-            # )  # INPUT biomass / INPUT h2
-            cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen"), "value"] = (cost_dataframe.loc[("electrobiofuels", "efficiency-biomass"), "value"]
-                * efuel_scale_factor )
+            
+            cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen-fuel"), "value"] = (
+                cost_dataframe.loc[("Fischer-Tropsch", "efficiency"), "value"]
+                / efuel_scale_factor
+            )  #FT_fuel_total/H2_input
 
-            cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen"), "unit"] = (
+            cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen-fuel"), "unit"] = (
                 "per unit"
             )
-            cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen"), "source"] = (
+            cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen-fuel"), "source"] = (
+                "Stoichiometric calculation"
+            )
+            cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen-biomass"), "value"] = (cost_dataframe.loc[("electrobiofuels", "efficiency-biomass"), "value"]/
+            cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen-fuel"), "value"]
+            )  # INPUT h2 / INPUT biomass
+
+            cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen-biomass"), "unit"] = (
+                "per unit"
+            )
+            cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen-biomass"), "source"] = (
                 "Stoichiometric calculation"
             )
 
             cost_dataframe.loc[("electrobiofuels", "efficiency-tot"), "value"] = 1 / (
-                1 / (cost_dataframe.loc[("Fischer-Tropsch", "efficiency"), "value"] / efuel_scale_factor)
+                1 / cost_dataframe.loc[("electrobiofuels", "efficiency-hydrogen-fuel"), "value"]
                 + 1 / cost_dataframe.loc[("electrobiofuels", "efficiency-biomass"), "value"]
-            )
-            cost_dataframe.loc[("electrobiofuels", "efficiency-tot"), "unit"] = (
-                "per unit"
-            )
-            cost_dataframe.loc[("electrobiofuels", "efficiency-tot"), "source"] = (
-                "Stoichiometric calculation"
-            )
-
-            cost_dataframe.loc[("electrobiofuels", "efficiency-tot"), "value"] = 1 / (
-                1
-                / cost_dataframe.loc[
-                    ("electrobiofuels", "efficiency-hydrogen"), "value"
-                ]
-                + 1
-                / cost_dataframe.loc[("electrobiofuels", "efficiency-biomass"), "value"]
             )
             cost_dataframe.loc[("electrobiofuels", "efficiency-tot"), "unit"] = (
                 "per unit"
@@ -3008,13 +2999,13 @@ def carbon_flow(
 
             inv_cost = (
                 btl_cost[year_to_use]
-                + cost_dataframe.loc[("Fischer-Tropsch", "investment"), "value"]
-                * efuel_scale_factor
+                * (cost_dataframe.loc[("BtL", "C in fuel"), "value"]
+                   /cost_dataframe.loc[("electrobiofuels", "C in fuel"), "value"])
             )
             VOM = (
                 cost_dataframe.loc[("BtL", "VOM"), "value"]
-                + cost_dataframe.loc[("Fischer-Tropsch", "VOM"), "value"]
-                * efuel_scale_factor
+                * (cost_dataframe.loc[("BtL", "C in fuel"), "value"]
+                   /cost_dataframe.loc[("electrobiofuels", "C in fuel"), "value"])
             )
             FOM = cost_dataframe.loc[("BtL", "FOM"), "value"]
             medium_out = "oil"
@@ -3031,7 +3022,7 @@ def carbon_flow(
 
             costs.loc[('e-biomethanol', 'C in fuel'), 'value'] = (costs.loc[('biomass-to-methanol', 'C in fuel'), 'value']
                                                                     + costs.loc[('biomass-to-methanol', 'C stored'), 'value']
-                                                                    * costs.loc[('biomass-to-methanol', 'capture rate'), 'value'] * 0.98)
+                                                                    * costs.loc[('biomass-to-methanol', 'capture rate'), 'value'])
             costs.loc[('e-biomethanol', 'C in fuel'), 'unit'] = 'per unit'
             costs.loc[('e-biomethanol', 'C in fuel'), 'source'] = 'Stoichiometric calculation'
 
@@ -3041,23 +3032,29 @@ def carbon_flow(
             costs.loc[('e-biomethanol', 'efficiency-biomass'), 'source'] = 'Stoichiometric calculation'
 
 
-            emethanol_scale_factor = costs.loc[('biomass-to-methanol', 'C stored'), 'value']* costs.loc[('biomass-to-methanol', 'capture rate'), 'value'] * 0.98
+            emethanol_scale_factor = costs.loc[('biomass-to-methanol', 'C stored'), 'value']* costs.loc[('biomass-to-methanol', 'capture rate'), 'value']
 
             # costs.loc[('e-biomethanol', 'efficiency-hydrogen'), 'value'] = costs.loc[('methanolisation', 'efficiency'), 'value']\
             #                                                                  / emethanol_scale_factor  #FT_fuel_total/H2_input
-            costs.loc[('e-biomethanol', 'efficiency-hydrogen'), 'value'] = costs.loc[('methanolisation', 'efficiency'), 'value']\
-                                                                             * emethanol_scale_factor  #FT_fuel_total/H2_input
-            costs.loc[('e-biomethanol', 'efficiency-hydrogen'), 'unit'] = 'per unit'
-            costs.loc[('e-biomethanol', 'efficiency-hydrogen'), 'source'] = 'Stoichiometric calculation'
+            costs.loc[('e-biomethanol', 'efficiency-hydrogen-fuel'), 'value'] = costs.loc[('methanolisation', 'efficiency'), 'value']/\
+                                                                              emethanol_scale_factor  #FT_fuel_total/H2_input
+            costs.loc[('e-biomethanol', 'efficiency-hydrogen-fuel'), 'unit'] = 'per unit'
+            costs.loc[('e-biomethanol', 'efficiency-hydrogen-fuel'), 'source'] = 'Stoichiometric calculation'
+            costs.loc[('e-biomethanol', 'efficiency-hydrogen-biomass'), 'value'] = (costs.loc[('e-biomethanol', 'efficiency-biomass'), 'value']/
+                                                                             costs.loc[('e-biomethanol', 'efficiency-hydrogen-fuel'), 'value'])  #INPUT h2 / INPUT biomass
+            costs.loc[('e-biomethanol', 'efficiency-hydrogen-biomass'), 'unit'] = 'per unit'
+            costs.loc[('e-biomethanol', 'efficiency-hydrogen-biomass'), 'source'] = 'Stoichiometric calculation'
 
             costs.loc[('e-biomethanol', 'efficiency-tot'), 'value'] = (1 /
-                                                                         (1 / (cost_dataframe.loc[("methanolisation", "efficiency"), "value"] / emethanol_scale_factor) +
+                                                                         (1 / costs.loc[('e-biomethanol', 'efficiency-hydrogen-fuel'), 'value'] +
                                                                           1 / costs.loc[('e-biomethanol', 'efficiency-biomass'), 'value']))   #FT_fuel_total/(H2_input
             costs.loc[('e-biomethanol', 'efficiency-tot'), 'unit'] = 'per unit'
             costs.loc[('e-biomethanol', 'efficiency-tot'), 'source'] = 'Stoichiometric calculation'
 
-            inv_cost = costs.loc[('biomass-to-methanol', 'investment'), 'value'] + costs.loc[('methanolisation', 'investment'), 'value'] * emethanol_scale_factor
-            VOM = costs.loc[('biomass-to-methanol', 'VOM'), 'value'] #+ costs.loc[('methanolisation', 'VOM'), 'value'] * emethanol_scale_factor
+            inv_cost = (costs.loc[('biomass-to-methanol', 'investment'), 'value'] * 
+            (costs.loc[('biomass-to-methanol', 'C in fuel'), 'value']/costs.loc[('e-biomethanol', 'C in fuel'), 'value']))
+            VOM = (costs.loc[('biomass-to-methanol', 'VOM'), 'value'] *
+            (costs.loc[('biomass-to-methanol', 'C in fuel'), 'value']/costs.loc[('e-biomethanol', 'C in fuel'), 'value']))
             FOM = costs.loc[('biomass-to-methanol', 'FOM'), 'value']
             medium_out = 'methanol'
             currency_year = costs.loc[('methanolisation', 'investment'), "currency_year"]
@@ -3071,7 +3068,7 @@ def carbon_flow(
 
             costs.loc[('e-bioSNG', 'C in fuel'), 'value'] = (costs.loc[('BioSNG', 'C in fuel'), 'value']
                                                                     + costs.loc[('BioSNG', 'C stored'), 'value']
-                                                                    * costs.loc[('BioSNG', 'capture rate'), 'value'] * 0.98)
+                                                                    * costs.loc[('BioSNG', 'capture rate'), 'value'])
             costs.loc[('e-bioSNG', 'C in fuel'), 'unit'] = 'per unit'
             costs.loc[('e-bioSNG', 'C in fuel'), 'source'] = 'Stoichiometric calculation'
 
@@ -3081,21 +3078,27 @@ def carbon_flow(
             costs.loc[('e-bioSNG', 'efficiency-biomass'), 'source'] = 'Stoichiometric calculation'
 
 
-            ebiosng_scale_factor = costs.loc[('BioSNG', 'C stored'), 'value'] * costs.loc[('BioSNG', 'capture rate'), 'value'] * 0.98
+            ebiosng_scale_factor = costs.loc[('BioSNG', 'C stored'), 'value'] * costs.loc[('BioSNG', 'capture rate'), 'value']
 
-            costs.loc[('e-bioSNG', 'efficiency-hydrogen'), 'value'] = costs.loc[('e-bioSNG', 'efficiency-biomass'), 'value']\
-                                                                             * ebiosng_scale_factor  #FT_fuel_total/H2_input
-            costs.loc[('e-bioSNG', 'efficiency-hydrogen'), 'unit'] = 'per unit'
-            costs.loc[('e-bioSNG', 'efficiency-hydrogen'), 'source'] = 'Stoichiometric calculation'
+            costs.loc[('e-bioSNG', 'efficiency-hydrogen-fuel'), 'value'] = costs.loc[('methanation', 'efficiency'), 'value']/\
+                                                                             ebiosng_scale_factor  #FT_fuel_total/H2_input
+            costs.loc[('e-bioSNG', 'efficiency-hydrogen-fuel'), 'unit'] = 'per unit'
+            costs.loc[('e-bioSNG', 'efficiency-hydrogen-fuel'), 'source'] = 'Stoichiometric calculation'
+            costs.loc[('e-bioSNG', 'efficiency-hydrogen-biomass'), 'value'] = costs.loc[('e-bioSNG', 'efficiency-biomass'), 'value']/\
+                                                                             costs.loc[('e-bioSNG', 'efficiency-hydrogen-fuel'), 'value']  #INPUT h2 / INPUT biomass
+            costs.loc[('e-bioSNG', 'efficiency-hydrogen-biomass'), 'unit'] = 'per unit'
+            costs.loc[('e-bioSNG', 'efficiency-hydrogen-biomass'), 'source'] = 'Stoichiometric calculation'
 
             costs.loc[('e-bioSNG', 'efficiency-tot'), 'value'] = (1 /
-                                                                         (1 / (cost_dataframe.loc[("methanation", "efficiency"), "value"] / ebiosng_scale_factor) +
-                                                                          1 / costs.loc[('e-bioSNG', 'efficiency-biomass'), 'value']))   #FT_fuel_total/(H2_input
+                                                                         (1 / costs.loc[('e-bioSNG', 'efficiency-hydrogen-fuel'), 'value'] +
+                                                                          1 / costs.loc[('e-bioSNG', 'efficiency-biomass'), 'value']))   
             costs.loc[('e-bioSNG', 'efficiency-tot'), 'unit'] = 'per unit'
             costs.loc[('e-bioSNG', 'efficiency-tot'), 'source'] = 'Stoichiometric calculation'
 
-            inv_cost = costs.loc[('BioSNG', 'investment'), 'value'] + costs.loc[('methanation', 'investment'), 'value'] * ebiosng_scale_factor
-            VOM = costs.loc[('BioSNG', 'VOM'), 'value'] #+ costs.loc[('methanation', 'VOM'), 'value'] * ebiosng_scale_factor
+            inv_cost = (costs.loc[('BioSNG', 'investment'), 'value'] *
+            (costs.loc[('BioSNG', 'C in fuel'), 'value']/costs.loc[('e-bioSNG', 'C in fuel'), 'value']))
+            VOM = (costs.loc[('BioSNG', 'VOM'), 'value'] 
+            *(costs.loc[('BioSNG', 'C in fuel'), 'value']/costs.loc[('e-bioSNG', 'C in fuel'), 'value']))
             FOM = costs.loc[('BioSNG', 'FOM'), 'value']
             medium_out = 'gas'
             currency_year = costs.loc[('methanation', 'investment'), "currency_year"]
