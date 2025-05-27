@@ -2999,13 +2999,11 @@ def carbon_flow(
 
             inv_cost = (
                 btl_cost[year_to_use]
-                * (cost_dataframe.loc[("BtL", "C in fuel"), "value"]
-                   /cost_dataframe.loc[("electrobiofuels", "C in fuel"), "value"])
-            )
+                * 1.3)    #https://doi.org/10.1016/j.fuel.2018.08.004
+
             VOM = (
                 cost_dataframe.loc[("BtL", "VOM"), "value"]
-                * (cost_dataframe.loc[("BtL", "C in fuel"), "value"]
-                   /cost_dataframe.loc[("electrobiofuels", "C in fuel"), "value"])
+                * 1.5    #https://doi.org/10.1016/j.fuel.2018.08.004
             )
             FOM = cost_dataframe.loc[("BtL", "FOM"), "value"]
             medium_out = "oil"
@@ -3051,11 +3049,10 @@ def carbon_flow(
             costs.loc[('e-biomethanol', 'efficiency-tot'), 'unit'] = 'per unit'
             costs.loc[('e-biomethanol', 'efficiency-tot'), 'source'] = 'Stoichiometric calculation'
 
-            inv_cost = (costs.loc[('biomass-to-methanol', 'investment'), 'value'] * 
-            (costs.loc[('biomass-to-methanol', 'C in fuel'), 'value']/costs.loc[('e-biomethanol', 'C in fuel'), 'value']))
-            VOM = (costs.loc[('biomass-to-methanol', 'VOM'), 'value'] *
-            (costs.loc[('biomass-to-methanol', 'C in fuel'), 'value']/costs.loc[('e-biomethanol', 'C in fuel'), 'value']))
-            FOM = costs.loc[('biomass-to-methanol', 'FOM'), 'value']
+            inv_cost = (costs.loc[('biomass-to-methanol', 'investment'), 'value'] * 0.8) #https://doi.org/10.1016/j.energy.2023.127202
+            VOM = (costs.loc[('biomass-to-methanol', 'VOM'), 'value'] * 1.2)   #https://doi.org/10.1016/j.energy.2023.127202
+            
+            FOM = costs.loc[('biomass-to-methanol', 'FOM'), 'value']  
             medium_out = 'methanol'
             currency_year = costs.loc[('methanolisation', 'investment'), "currency_year"]
             cost_dataframe.loc[(tech_name, "FOM"), "currency_year"] = 2015
@@ -3095,10 +3092,9 @@ def carbon_flow(
             costs.loc[('e-bioSNG', 'efficiency-tot'), 'unit'] = 'per unit'
             costs.loc[('e-bioSNG', 'efficiency-tot'), 'source'] = 'Stoichiometric calculation'
 
-            inv_cost = (costs.loc[('BioSNG', 'investment'), 'value'] *
-            (costs.loc[('BioSNG', 'C in fuel'), 'value']/costs.loc[('e-bioSNG', 'C in fuel'), 'value']))
+            inv_cost = (costs.loc[('BioSNG', 'investment'), 'value'] * 1.04 )  #https://doi.org/10.1016/j.energy.2016.03.119
             VOM = (costs.loc[('BioSNG', 'VOM'), 'value'] 
-            *(costs.loc[('BioSNG', 'C in fuel'), 'value']/costs.loc[('e-bioSNG', 'C in fuel'), 'value']))
+            * 1.1 )  #https://doi.org/10.1016/j.energy.2016.03.119
             FOM = costs.loc[('BioSNG', 'FOM'), 'value']
             medium_out = 'gas'
             currency_year = costs.loc[('methanation', 'investment'), "currency_year"]
