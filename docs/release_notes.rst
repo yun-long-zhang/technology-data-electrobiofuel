@@ -1,7 +1,6 @@
 
 ..
   SPDX-FileCopyrightText: Contributors to technology-data <https://github.com/pypsa/technology-data>
-
   SPDX-License-Identifier: GPL-3.0-only
 
 ##########################################
@@ -11,12 +10,98 @@ Release Notes
 Upcoming Release
 ================
 
-* Removed water-sourced heat pumps, as cost assumptions (based on higher uncertainty range in DEA tables) are a) likely overestimates and b) break pessimistic/optimistic scenarios. Reccomendation: Use excess-heat-sourced heat pump data or see DEA data on seawater-sourced heat pumps.
-
 .. .. warning:: 
   
 ..   The features listed below are not released yet, but will be part of the next release! 
 ..   To use the features already you have to use the ``master`` branch.
+
+* Adding `Enhanced Weathering` (or Rocks) as CDR technology. (https://github.com/PyPSA/technology-data/pull/256)
+
+* Add cost assumptions for water network infrastructure: water pipeline HDPE and water pipeline booster pump (https://github.com/PyPSA/technology-data/pull/277)
+
+* Correct the nuclear fuel price (``nuclear``, ``uranium``) using Lazard's LCOE+ assumption (https://github.com/PyPSA/technology-data/pull/291)
+
+`v0.15.0 <https://github.com/PyPSA/technology-data/releases/tag/v0.15.0>`__ (9th June 2026)
+================================================================================================
+
+**Breaking changes**
+
+* Renamed ``electricity grid connection`` to ``distribution grid reinforcement`` and updated description for more clarity on the technology and consistency with the source.
+
+**Changes**
+
+* Added "Post-combustion carbon capture retrofit - 500 MW(th) biomass-fired boiler" as ``biomass boiler capture`` (https://github.com/PyPSA/technology-data/pull/253).
+
+* Added VOM for carbon capture retrofits: ``biomass CHP capture`` and ``cement capture`` (https://github.com/PyPSA/technology-data/pull/253).
+
+* Added technology data for ``CO2 dense phase compression`` step for transport in large pipelines which is different from the current ``CO2 liquefaction`` technology parameters that is taken for ship transport  (https://github.com/PyPSA/technology-data/pull/273).
+
+* Added missing discount rate for OCGT in US-specific data. (https://github.com/PyPSA/technology-data/pull/269)
+
+* The ``currency_year`` column will now reflect the inflation adjusted currency year instead of the original currency year of the input data. (https://github.com/PyPSA/technology-data/pull/275)
+
+`v0.14.0 <https://github.com/PyPSA/technology-data/releases/tag/v0.14.0>`__ (13th February 2026)
+================================================================================================
+
+* Changed currency year from 2020 to 2025 for all cost assumptions using updated Eurostat inflation rates. (https://github.com/PyPSA/technology-data/pull/263)
+
+* Updated electricity transmission and offshore wind connection costs based on latest DEA data (https://ens.dk/en/analyses-and-statistics/technology-data-transport-energy, July 2025).
+  Aligned unit costs of offshore wind connection and general transmission. For offshore wind connections, included missing FOM. (https://github.com/PyPSA/technology-data/pull/262)
+
+* Updated fossil fuel (gas, oil, lignite) and nuclear fuel (nuclear, uranium) costs based on TYNDP 2024 scenarios data. (https://github.com/PyPSA/technology-data/pull/259)
+
+* Changed to DEA assumptions for Fischer-Tropsch and methanolisation. (https://github.com/PyPSA/technology-data/pull/251)
+
+* Fixed coal consumption of blast furnace steelmaking. (https://github.com/PyPSA/technology-data/pull/246)
+
+* Added grey methanol synthesis. (https://github.com/PyPSA/technology-data/pull/248)
+
+* Aligned cost units for NREL battery data with PyPSA modeling, fetching investment cost and FOM for both `battery storage` and `battery inverter` instead of a single value for `battery storage`, which was instead representative of the full plant (battery storage + battery inverter). (https://github.com/PyPSA/technology-data/pull/239)
+
+`v0.13.4 <https://github.com/PyPSA/technology-data/releases/tag/v0.13.4>`__ (20th October 2025)
+===============================================================================================
+
+* Corrected CO2 content in biogas. (https://github.com/PyPSA/technology-data/pull/236)
+
+* Fixed indexing for PTES and revised capital cost and FOM assumptions for 2045 and 2050. (https://github.com/PyPSA/technology-data/pull/234)
+
+* Added excess heat output rates for Fischer-Tropsch and Haber-Bosch processes. (https://github.com/PyPSA/technology-data/pull/241)
+
+`v0.13.3 <https://github.com/PyPSA/technology-data/releases/tag/v0.13.3>`__ (1st July 2025)
+===========================================================================================
+
+* Corrected units for standing losses of TES technologies from per unit to %/hour and changed parameter names from "Energy losses during storage" to "standing losses" as well as "Temperature difference" to "temperature difference" for naming consistency. (https://github.com/PyPSA/technology-data/pull/230)
+
+* Added standing losses as parameters for LTES. (https://github.com/PyPSA/technology-data/pull/229)
+
+`v0.13.2 <https://github.com/PyPSA/technology-data/releases/tag/v0.13.2>`__ (13th June 2025)
+=======================================================================================
+
+* Refine size subdivision and add reference capacities for Alkaline and PEM elctrolyzers (https://github.com/PyPSA/technology-data/pull/228)
+
+`v0.13.1 <https://github.com/PyPSA/technology-data/releases/tag/v0.13.1>`__ (11th June 2025)
+=======================================================================================
+
+* Fix US-specific DAC parameters and currency year (https://github.com/PyPSA/technology-data/pull/227)
+
+`v0.13.0 <https://github.com/PyPSA/technology-data/releases/tag/v0.13.0>`__ (11th June 2025)
+=======================================================================================
+
+
+* Add several H2 production technologies (generic cost assumptions), fix FOM values and rename of efficiency to electricity-input in US cost assumptions for US-specific electrolyzer costs (https://github.com/PyPSA/technology-data/pull/222)
+
+`v0.12.0 <https://github.com/PyPSA/technology-data/releases/tag/v0.12.0>`__ (19th May 2025)
+=======================================================================================
+
+* Removed geothermal-sourced heat pumps and fixed previously underestimated costs for geothermal heat source. Recommendation: Use excess-heat-sourced heat pump data for geothermal-sourced heat pumps (only the heat pump part of the costs!) and consult the DEA technology catalogue.
+
+* Removed water-sourced heat pumps, as cost assumptions (based on higher uncertainty range in DEA tables) are a) likely overestimates and b) break pessimistic/optimistic scenarios. Recomendation: Use excess-heat-sourced heat pump data or see DEA data on seawater-sourced heat pumps.
+
+* Updated DEA Energy Storage data file (technology_data_catalogue_for_energy_storage.xlsx) to the newest version 9 – costs are now given in 2020 currency year.
+
+* Added storage temperatures as a parameter for central and decentral water tanks as well as for pit thermal energy storage.
+
+* Integrated gas storage processing directly into the order_data function and removed the add_gas_storage function, as its data structure now matches that of the other components in the technology_data_catalogue_for_energy_storage.xlsx file.
 
 * Include unit test for compile_cost_assumptions_usa.py (https://github.com/PyPSA/technology-data/pull/170)
 
@@ -52,10 +137,18 @@ Upcoming Release
 
 * Updates ci.yaml such that it fails if the generated outputs are different than the ones committed (https://github.com/PyPSA/technology-data/pull/205)
 
+* Add BF-BOF and separate natural gas- and hydrogen-based steelmaking (The technology previously called `direct iron reduction furnace` becomes `hydrogen direct iron reduction`, and `natural gas direct iron reduction furnace` represent the conventional direct iron reduction process), cement and ethanol production technologies (https://github.com/PyPSA/technology-data/pull/211)
+
+* Add industrial plant CCS retrofit options (https://github.com/PyPSA/technology-data/pull/212)
+
+* Include further unit tests for compile_cost_assumptions.py (https://github.com/PyPSA/technology-data/pull/210)
+
+* Removed additional newlines in the output csv's, if multiple `further_description` are given and concatenated. Each row in the output csv's should now indicate exactly one technology (https://github.com/PyPSA/technology-data/pull/219)
+
 `v0.11.0 <https://github.com/PyPSA/technology-data/releases/tag/v0.11.0>`__ (24th January 2025)
 =======================================================================================
 
-* Country specific cost assumptions and added NREL/ATB data (https://github.com/PyPSA/technology-data/pull/160)
+* Country-specific cost assumptions and added NREL/ATB data (https://github.com/PyPSA/technology-data/pull/160)
 
 * Add missing currency_year for FOM (https://github.com/PyPSA/technology-data/pull/163)
 

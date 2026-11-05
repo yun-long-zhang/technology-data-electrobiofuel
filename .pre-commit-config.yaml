@@ -3,9 +3,12 @@
 # SPDX-License-Identifier: GPL-3.0-only
 exclude: "^LICENSES"
 
+ci:
+  autoupdate_schedule: quarterly
+
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
+  rev: v6.0.0
   hooks:
   - id: check-merge-conflict
   - id: check-added-large-files
@@ -14,7 +17,7 @@ repos:
 # Run ruff to lint and format
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.11.5
+  rev: v0.16.10
   hooks:
     # Run the linter.
   - id: ruff
@@ -24,7 +27,7 @@ repos:
 
   # Find common spelling mistakes in comments and docstrings
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.4.1
+  rev: v2.4.3
   hooks:
   - id: codespell
     args: ['--ignore-regex="(\b[A-Z]+\b)"', '--ignore-words-list=fom,appartment,bage,ore,setis,tabacco,berfore,vor,pris,WEGE,Wege,Eletricity'] # Ignore capital case words, e.g. country codes
@@ -33,7 +36,7 @@ repos:
 
   # YAML formatting
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.14.0
+  rev: v2.16.0
   hooks:
   - id: pretty-format-yaml
     exclude: pinned\.yaml$
@@ -41,6 +44,6 @@ repos:
 
   # Format Snakemake rule / workflow files
 - repo: https://github.com/snakemake/snakefmt
-  rev: v0.11.0
+  rev: v2.0.3
   hooks:
   - id: snakefmt

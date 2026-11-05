@@ -6,26 +6,24 @@
 
 import copy
 import pathlib
-import sys
 
 import numpy as np
 import pandas as pd
 import pytest
 
-sys.path.append("./scripts")
-
-from compile_cost_assumptions import (
+from scripts.compile_cost_assumptions import (
     add_carbon_capture,
     add_description,
-    add_gas_storage,
     annuity,
     clean_up_units,
     convert_units,
     dea_sheet_names,
     geometric_series,
     get_data_from_DEA,
+    get_dea_vehicle_data,
     get_excel_sheets,
     get_sheet_location,
+    rename_pypsa_old,
     set_round_trip_efficiency,
     set_specify_assumptions,
 )
@@ -33,7 +31,7 @@ from compile_cost_assumptions import (
 path_cwd = pathlib.Path.cwd()
 
 snakemake_input_dictionary = {
-    "inflation_rate": "inputs/Eurostat_inflation_rate.xlsx",
+    "inflation_rate": "inputs/prc_hicp_aind__custom_20097956_spreadsheet.xlsx",
     "pypsa_costs": "inputs/costs_PyPSA.csv",
     "fraunhofer_costs": "inputs/Fraunhofer_ISE_costs.csv",
     "fraunhofer_energy_prices": "inputs/Fraunhofer_ISE_energy_prices.csv",
@@ -75,7 +73,7 @@ def test_get_excel_sheets():
         "inputs/energy_transport_data_sheet_dec_2017.xlsx": 16,
         "inputs/data_sheets_for_commercial_freight_and_passenger_transport_0.xlsx": 19,
         "inputs/data_sheets_for_renewable_fuels.xlsx": 45,
-        "inputs/technology_data_catalogue_for_energy_storage.xlsx": 15,
+        "inputs/technology_data_catalogue_for_energy_storage.xlsx": 20,
         "inputs/technology_data_for_el_and_dh.xlsx": 72,
         "inputs/technologydatafor_heating_installations_marts_2018.xlsx": 29,
         "inputs/technology_data_for_industrial_process_heat.xlsx": 32,
@@ -116,7 +114,6 @@ def test_get_sheet_location():
         "central solid biomass CHP CC": "inputs/technology_data_for_el_and_dh.xlsx",
         "central solid biomass CHP powerboost CC": "inputs/technology_data_for_el_and_dh.xlsx",
         "central air-sourced heat pump": "inputs/technology_data_for_el_and_dh.xlsx",
-        "central geothermal-sourced heat pump": "inputs/technology_data_for_el_and_dh.xlsx",
         "central geothermal heat source": "inputs/technology_data_for_el_and_dh.xlsx",
         "central excess-heat-sourced heat pump": "inputs/technology_data_for_el_and_dh.xlsx",
         "central ground-sourced heat pump": "inputs/technology_data_for_el_and_dh.xlsx",
@@ -144,12 +141,14 @@ def test_get_sheet_location():
         "industrial heat pump high temperature": "inputs/technology_data_for_industrial_process_heat.xlsx",
         "electric boiler steam": "inputs/technology_data_for_industrial_process_heat.xlsx",
         "gas boiler steam": "inputs/technology_data_for_industrial_process_heat.xlsx",
+        "gas storage": "inputs/technology_data_catalogue_for_energy_storage.xlsx",
         "solid biomass boiler steam": "inputs/technology_data_for_industrial_process_heat.xlsx",
         "solid biomass boiler steam CC": "inputs/technology_data_for_industrial_process_heat.xlsx",
         "biomass boiler": "inputs/technologydatafor_heating_installations_marts_2018.xlsx",
         "electrolysis": "inputs/data_sheets_for_renewable_fuels.xlsx",
         "direct air capture": "inputs/technology_data_for_carbon_capture_transport_storage.xlsx",
         "biomass CHP capture": "inputs/technology_data_for_carbon_capture_transport_storage.xlsx",
+        "biomass boiler capture": "inputs/technology_data_for_carbon_capture_transport_storage.xlsx",
         "cement capture": "inputs/technology_data_for_carbon_capture_transport_storage.xlsx",
         "BioSNG": "inputs/data_sheets_for_renewable_fuels.xlsx",
         "BtL": "inputs/data_sheets_for_renewable_fuels.xlsx",
@@ -205,8 +204,7 @@ def test_get_data_from_dea(config):
         "central solid biomass CHP CC": (13, 9),
         "central solid biomass CHP powerboost CC": (13, 9),
         "central air-sourced heat pump": (6, 9),
-        "central geothermal-sourced heat pump": (8, 9),
-        "central geothermal heat source": (8, 9),
+        "central geothermal heat source": (11, 9),
         "central excess-heat-sourced heat pump": (6, 9),
         "central ground-sourced heat pump": (5, 9),
         "central resistive heater": (7, 9),
@@ -218,36 +216,38 @@ def test_get_data_from_dea(config):
         "direct firing solid fuels CC": (7, 9),
         "decentral ground-sourced heat pump": (9, 9),
         "decentral air-sourced heat pump": (9, 9),
-        "central water pit storage": (10, 9),
-        "central water tank storage": (10, 9),
-        "decentral water tank storage": (9, 9),
+        "central water pit storage": (13, 9),
+        "central water tank storage": (12, 9),
+        "decentral water tank storage": (11, 9),
         "fuel cell": (8, 9),
-        "hydrogen storage underground": (10, 9),
-        "hydrogen storage tank type 1 including compressor": (10, 9),
+        "hydrogen storage underground": (11, 9),
+        "hydrogen storage tank type 1 including compressor": (11, 9),
         "micro CHP": (8, 9),
         "biogas": (4, 9),
         "biogas CC": (4, 9),
         "biogas upgrading": (4, 9),
-        "battery": (13, 9),
+        "battery": (14, 9),
         "industrial heat pump medium temperature": (6, 9),
         "industrial heat pump high temperature": (6, 9),
         "electric boiler steam": (7, 9),
         "gas boiler steam": (7, 9),
+        "gas storage": (7, 9),
         "solid biomass boiler steam": (7, 9),
         "solid biomass boiler steam CC": (7, 9),
         "biomass boiler": (6, 9),
         "electrolysis": (7, 9),
         "direct air capture": (8, 9),
         "biomass CHP capture": (10, 9),
+        "biomass boiler capture": (10, 9),
         "cement capture": (10, 9),
         "BioSNG": (6, 9),
         "BtL": (6, 9),
         "biomass-to-methanol": (8, 9),
         "biogas plus hydrogen": (6, 9),
-        "methanolisation": (7, 9),
-        "Fischer-Tropsch": (6, 9),
+        "methanolisation": (6, 9),
+        "Fischer-Tropsch": (8, 9),
         "central hydrogen CHP": (8, 9),
-        "Haber-Bosch": (10, 9),
+        "Haber-Bosch": (12, 9),
         "air separation unit": (7, 9),
         "waste CHP": (16, 9),
         "waste CHP CC": (16, 9),
@@ -564,94 +564,16 @@ def test_geometric_series(nom_val, den_val, n_terms, start_val, expected_val):
     )
 
 
-def test_add_gas_storage(config):
-    """
-    The test verifies what is returned by add_gas_storage.
-    """
-    input_file_path = pathlib.Path(
-        path_cwd, "inputs", "technology_data_catalogue_for_energy_storage.xlsx"
-    )
-    list_of_years = ["2020"]
-    technology_series = pd.Series(
-        [
-            "gas_storage",
-            "gas_storage",
-            "gas storage charger",
-            "gas storage discharger",
-            "gas_storage",
-        ]
-    )
-    parameter_series = pd.Series(
-        [
-            "investment",
-            "lifetime",
-            "investment",
-            "investment",
-            "FOM",
-        ]
-    )
-    technology_dataframe = pd.DataFrame(
-        {
-            "2020": [np.nan] * 5,
-        }
-    ).set_index([technology_series, parameter_series])
-    output_df = add_gas_storage(input_file_path, list_of_years, technology_dataframe)
-    cleaned_df = (
-        output_df.dropna(how="all")
-        .reset_index(drop=False)
-        .rename(columns={"level_0": "technology", "level_1": "parameter"})
-    )
-
-    reference_output_df = pd.DataFrame(
-        {
-            "technology": [
-                "gas storage charger",
-                "gas storage discharger",
-                "gas storage",
-                "gas storage",
-                "gas storage",
-            ],
-            "parameter": ["investment"] * 3 + ["lifetime", "FOM"],
-            "2020": [
-                14.33885157711495,
-                4.77961719237165,
-                0.03290254335105841,
-                100.0,
-                3.5918748566291763,
-            ],
-            "source": ["Danish Energy Agency"] * 3
-            + ["TODO no source"]
-            + ["Danish Energy Agency"],
-            "further description": [
-                "150 Underground Storage of Gas, Process equipment (units converted)"
-            ]
-            * 2
-            + [
-                "150 Underground Storage of Gas, Establishment of one cavern (units converted)"
-            ]
-            + [
-                "estimation: most underground storage are already build, they do have a long lifetime"
-            ]
-            + [
-                "150 Underground Storage of Gas, Operation and Maintenance, salt cavern (units converted)"
-            ],
-            "unit": ["EUR/kW"] * 2 + ["EUR/kWh"] + ["years", "%"],
-            "currency_year": [2015.0, np.nan, 2015.0, np.nan, np.nan],
-        }
-    )
-    comparison_df = cleaned_df.compare(reference_output_df)
-    assert comparison_df.empty
-
-
 def test_add_carbon_capture(config):
     """
     The test verifies what is returned by add_carbon_capture.
     """
     list_of_years = ["2020"]
     technology_series = pd.Series(
-        ["cement capture"] * 9
-        + ["biomass CHP capture"] * 9
-        + ["direct air capture"] * 9,
+        ["cement capture"] * 10
+        + ["biomass CHP capture"] * 10
+        + ["direct air capture"] * 10
+        + ["biomass boiler capture"] * 10,
     )
     input_parameter_series = pd.Series(
         [
@@ -664,16 +586,35 @@ def test_add_carbon_capture(config):
             "CO₂ compression and dehydration - Electricity input",
             "CO₂ compression and dehydration - Heat out",
             "lifetime",
+            "Variable O&M",
         ]
-        * 3,
+        * 3
+        + [
+            "A3) CO2 capture rate, net",
+            "Specific investment",
+            "Fixed O&M",
+            "C2) Eletricity input ",
+            "C1) Heat  input ",
+            "C1) Heat out ",
+            "CO₂ compression and dehydration - Electricity input",
+            "CO₂ compression and dehydration - Heat out",
+            "lifetime",
+            "Variable O&M",
+        ],
     )
     technology_dataframe = pd.DataFrame(
         {
-            "2020": [50, 100, 10, 40, 90, 9, 30, 80, 10] * 3,
-            "source": ["source"] * 27,
+            "2020": [50, 100, 10, 40, 90, 9, 30, 80, 10, 5] * 4,
+            "source": ["source"] * 40,
         }
     ).set_index([technology_series, input_parameter_series])
 
+    out_technology_series = pd.Series(
+        ["cement capture"] * 10
+        + ["biomass CHP capture"] * 10
+        + ["direct air capture"] * 10
+        + ["biomass boiler capture"] * 10,
+    )
     output_parameter_series = pd.Series(
         [
             "capture_rate",
@@ -685,15 +626,16 @@ def test_add_carbon_capture(config):
             "compression-electricity-input",
             "compression-heat-output",
             "lifetime",
+            "VOM",
         ]
-        * 3,
+        * 4,
     )
     new_technology_dataframe = pd.DataFrame(
         {
-            "2020": [np.nan] * 27,
-            "source": ["source"] * 27,
+            "2020": [np.nan] * 40,
+            "source": ["source"] * 40,
         }
-    ).set_index([technology_series, output_parameter_series])
+    ).set_index([out_technology_series, output_parameter_series])
 
     output_df = add_carbon_capture(
         list_of_years, dea_sheet_names, new_technology_dataframe, technology_dataframe
@@ -741,3 +683,44 @@ def test_add_carbon_capture(config):
             index=["2020", "source", "unit", "further description"],
         )
     )
+
+
+def test_get_dea_vehicle_data(config):
+    """
+    The test verifies what is returned by get_dea_vehicle_data.
+    """
+    df = get_dea_vehicle_data(
+        snakemake_input_dictionary["dea_vehicles"], ["2020"], pd.DataFrame()
+    )
+    assert df.shape == (90, 5)
+    assert sorted(list(df.columns)) == sorted(
+        ["2020", "unit", "source", "currency_year", "further description"]
+    )
+
+
+def test_rename_pypsa_old():
+    """
+    The test verifies what is returned by rename_pypsa_old.
+    """
+    data = {
+        ("decentral water tank storage", "investment"): [46.8],
+        ("central CHP", "investment"): [3000],
+        ("hydrogen underground storage", "investment"): [2000],
+        ("retrofitting I", "investment"): [1000],
+        ("retrofitting II", "investment"): [1500],
+    }
+    index = pd.MultiIndex.from_tuples(data.keys())
+    cost_dataframe_pypsa = pd.DataFrame(data.values(), index=index, columns=["value"])
+    expected_data = {
+        ("decentral water tank storage", "investment"): [1.0],
+        ("central gas CHP", "investment"): [3000],
+        ("hydrogen storage underground", "investment"): [2000],
+    }
+    expected_index = pd.MultiIndex.from_tuples(expected_data.keys())
+    expected_df = pd.DataFrame(
+        expected_data.values(), index=expected_index, columns=["value"]
+    )
+    expected_df.loc[("decentral water tank storage", "investment"), "unit"] = "EUR/kWh"
+    output_df = rename_pypsa_old(cost_dataframe_pypsa)
+    comparison_df = output_df.compare(expected_df)
+    assert comparison_df.empty
